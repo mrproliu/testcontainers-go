@@ -3,7 +3,7 @@ package wait
 import (
 	"context"
 	"fmt"
-	"google.golang.org/appengine/log"
+	"github.com/prometheus/common/log"
 	"net"
 	"os"
 	"strconv"
@@ -62,7 +62,8 @@ func (hp *HostPortStrategy) WaitUntilReady(ctx context.Context, target StrategyT
 	var port nat.Port
 	port, err = target.MappedPort(ctx, hp.Port)
 	var i = 0
-	log.Infof(ctx, "[test-log] target expected port: %v, find port: %s, host: %s", hp.Port, port, ipAddress)
+	log.Infof("[test-log] target expected port: %v, find port: %s, host: %s", hp.Port, port, ipAddress)
+	fmt.Printf("[test-log] target expected port: %v, find port: %s, host: %s", hp.Port, port, ipAddress)
 
 	for port == "" {
 		i++
@@ -73,7 +74,8 @@ func (hp *HostPortStrategy) WaitUntilReady(ctx context.Context, target StrategyT
 		case <-time.After(waitInterval):
 			port, err = target.MappedPort(ctx, hp.Port)
 			if err != nil {
-				log.Infof(ctx, "[test-log] find mapped port error: %v", err)
+				log.Infof("[test-log] find mapped port error: %v", err)
+				fmt.Printf("[test-log] find mapped port error: %v", err)
 				fmt.Printf("(%d) [%s] %s\n", i, port, err)
 			}
 		}
@@ -83,7 +85,8 @@ func (hp *HostPortStrategy) WaitUntilReady(ctx context.Context, target StrategyT
 	portNumber := port.Int()
 	portString := strconv.Itoa(portNumber)
 
-	log.Infof(ctx, "[test-log] target expected port: %v, external check: %s:%s", hp.Port, ipAddress, portString)
+	log.Infof("[test-log] target expected port: %v, external check: %s:%s", hp.Port, ipAddress, portString)
+	fmt.Printf("[test-log] target expected port: %v, external check: %s:%s", hp.Port, ipAddress, portString)
 	//external check
 	dialer := net.Dialer{}
 	address := net.JoinHostPort(ipAddress, portString)
@@ -104,10 +107,12 @@ func (hp *HostPortStrategy) WaitUntilReady(ctx context.Context, target StrategyT
 			break
 		}
 	}
-	log.Infof(ctx, "[test-log] target expected port: %v, external check success: %s:%s", hp.Port, ipAddress, portString)
+	log.Infof("[test-log] target expected port: %v, external check success: %s:%s", hp.Port, ipAddress, portString)
+	fmt.Printf("[test-log] target expected port: %v, external check success: %s:%s", hp.Port, ipAddress, portString)
 
 	//internal check
-	log.Infof(ctx, "[test-log] target expected port: %v, internal check", hp.Port)
+	log.Infof("[test-log] target expected port: %v, internal check", hp.Port)
+	fmt.Printf("[test-log] target expected port: %v, internal check", hp.Port)
 	command := buildInternalCheckCommand(hp.Port.Int())
 	for {
 		if ctx.Err() != nil {
