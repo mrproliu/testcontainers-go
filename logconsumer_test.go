@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/testcontainers/testcontainers-go/wait"
+	"github.com/mrproliu/testcontainers-go/wait"
 	"gotest.tools/assert"
 )
 

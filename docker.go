@@ -29,7 +29,7 @@ import (
 	"github.com/moby/term"
 	"github.com/pkg/errors"
 
-	"github.com/testcontainers/testcontainers-go/wait"
+	"github.com/mrproliu/testcontainers-go/wait"
 )
 
 // Implement interfaces

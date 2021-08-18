@@ -1,6 +1,6 @@
-[![Main pipeline](https://github.com/testcontainers/testcontainers-go/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/testcontainers/testcontainers-go/actions/workflows/ci.yml)
-[![Go Report Card](https://goreportcard.com/badge/github.com/testcontainers/testcontainers-go)](https://goreportcard.com/report/github.com/testcontainers/testcontainers-go)
-[![GoDoc Reference](https://camo.githubusercontent.com/8609cfcb531fa0f5598a3d4353596fae9336cce3/68747470733a2f2f676f646f632e6f72672f6769746875622e636f6d2f79616e6777656e6d61692f686f772d746f2d6164642d62616467652d696e2d6769746875622d726561646d653f7374617475732e737667)](https://pkg.go.dev/github.com/testcontainers/testcontainers-go)
+[![Main pipeline](https://github.com/mrproliu/testcontainers-go/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/mrproliu/testcontainers-go/actions/workflows/ci.yml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/mrproliu/testcontainers-go)](https://goreportcard.com/report/github.com/mrproliu/testcontainers-go)
+[![GoDoc Reference](https://camo.githubusercontent.com/8609cfcb531fa0f5598a3d4353596fae9336cce3/68747470733a2f2f676f646f632e6f72672f6769746875622e636f6d2f79616e6777656e6d61692f686f772d746f2d6164642d62616467652d696e2d6769746875622d726561646d653f7374617475732e737667)](https://pkg.go.dev/github.com/mrproliu/testcontainers-go)
 
 When I was working on a Zipkin PR I discovered a nice Java library called
 [Testcontainers](https://www.testcontainers.org/).
@@ -22,8 +22,8 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/testcontainers/testcontainers-go"
-	"github.com/testcontainers/testcontainers-go/wait"
+	"github.com/mrproliu/testcontainers-go"
+	"github.com/mrproliu/testcontainers-go/wait"
 )
 
 func TestNginxLatestReturn(t *testing.T) {
