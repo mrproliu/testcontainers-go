@@ -901,7 +901,7 @@ func (p *DockerProvider) GetGatewayIP(ctx context.Context) (string, error) {
 	// Use a default network as defined in the DockerProvider
 	nw, err := p.GetNetwork(ctx, NetworkRequest{Name: p.defaultNetwork})
 	marshal, _ := json.Marshal(nw)
-	log.Infof("[test-log] get network response: %v, err: %v", marshal, err)
+	log.Infof("[test-log] get network response: default network: %s, resp: %s, err: %v", p.defaultNetwork, string(marshal), err)
 	if err != nil {
 		return "", err
 	}
