@@ -6,9 +6,9 @@ import (
 	"context"
 	"encoding/binary"
 	"fmt"
+	"github.com/prometheus/common/log"
 	"io"
 	"io/ioutil"
-	"log"
 	"net/url"
 	"os"
 	"os/exec"
@@ -157,7 +157,7 @@ func (c *DockerContainer) SessionID() string {
 // Start will start an already created container
 func (c *DockerContainer) Start(ctx context.Context) error {
 	shortID := c.ID[:12]
-	log.Printf("Starting container id: %s image: %s", shortID, c.Image)
+	log.Infof("Starting container id: %s image: %s", shortID, c.Image)
 
 	if err := c.provider.client.ContainerStart(ctx, c.ID, types.ContainerStartOptions{}); err != nil {
 		return err
@@ -165,12 +165,12 @@ func (c *DockerContainer) Start(ctx context.Context) error {
 
 	// if a Wait Strategy has been specified, wait before returning
 	if c.WaitingFor != nil {
-		log.Printf("Waiting for container id %s image: %s", shortID, c.Image)
+		log.Infof("Waiting for container id %s image: %s", shortID, c.Image)
 		if err := c.WaitingFor.WaitUntilReady(ctx, c); err != nil {
 			return err
 		}
 	}
-	log.Printf("Container is ready id: %s image: %s", shortID, c.Image)
+	log.Infof("Container is ready id: %s image: %s", shortID, c.Image)
 
 	return nil
 }
@@ -742,7 +742,7 @@ func (p *DockerProvider) attemptToPullImage(ctx context.Context, tag string, pul
 			if _, ok := err.(errdefs.ErrNotFound); ok {
 				return backoff.Permanent(err)
 			}
-			log.Printf("Failed to pull image: %s, will retry", err)
+			log.Infof("Failed to pull image: %s, will retry", err)
 			return err
 		}
 		return nil
@@ -783,10 +783,12 @@ func (p *DockerProvider) RunContainer(ctx context.Context, req ContainerRequest)
 // You can use the "TC_HOST" env variable to set this yourself
 func (p *DockerProvider) daemonHost(ctx context.Context) (string, error) {
 	if p.hostCache != "" {
+		log.Infof("[test-log] cached host: %s", p.hostCache)
 		return p.hostCache, nil
 	}
 
 	host, exists := os.LookupEnv("TC_HOST")
+	log.Infof("[test-log] TC_HOST env: %s, exists: %b", host, exists)
 	if exists {
 		p.hostCache = host
 		return p.hostCache, nil
@@ -794,6 +796,7 @@ func (p *DockerProvider) daemonHost(ctx context.Context) (string, error) {
 
 	// infer from Docker host
 	url, err := url.Parse(p.client.DaemonHost())
+	log.Infof("[test-log] docker daemon host url: %s", p.client.DaemonHost())
 	if err != nil {
 		return "", err
 	}
@@ -802,11 +805,14 @@ func (p *DockerProvider) daemonHost(ctx context.Context) (string, error) {
 	case "http", "https", "tcp":
 		p.hostCache = url.Hostname()
 	case "unix", "npipe":
+		log.Infof("[test-log] is in a container: %b", inAContainer())
 		if inAContainer() {
 			ip, err := p.GetGatewayIP(ctx)
+			log.Infof("[test-log] get gateway ip result: %v, err: %v", ip, err)
 			if err != nil {
 				// fallback to getDefaultGatewayIP
 				ip, err = getDefaultGatewayIP()
+				log.Infof("[test-log] get default gateway ip", ip, err)
 				if err != nil {
 					ip = "localhost"
 				}
@@ -893,6 +899,7 @@ func (p *DockerProvider) GetNetwork(ctx context.Context, req NetworkRequest) (ty
 func (p *DockerProvider) GetGatewayIP(ctx context.Context) (string, error) {
 	// Use a default network as defined in the DockerProvider
 	nw, err := p.GetNetwork(ctx, NetworkRequest{Name: p.defaultNetwork})
+	log.Infof("[test-log] get network response: %v, err: %v", nw, err)
 	if err != nil {
 		return "", err
 	}
