@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/binary"
+	"encoding/json"
 	"fmt"
 	"github.com/prometheus/common/log"
 	"io"
@@ -899,7 +900,8 @@ func (p *DockerProvider) GetNetwork(ctx context.Context, req NetworkRequest) (ty
 func (p *DockerProvider) GetGatewayIP(ctx context.Context) (string, error) {
 	// Use a default network as defined in the DockerProvider
 	nw, err := p.GetNetwork(ctx, NetworkRequest{Name: p.defaultNetwork})
-	log.Infof("[test-log] get network response: %v, err: %v", nw, err)
+	marshal, _ := json.Marshal(nw)
+	log.Infof("[test-log] get network response: %v, err: %v", marshal, err)
 	if err != nil {
 		return "", err
 	}
@@ -932,6 +934,7 @@ func getDefaultGatewayIP() (string, error) {
 	// see https://github.com/testcontainers/testcontainers-java/blob/3ad8d80e2484864e554744a4800a81f6b7982168/core/src/main/java/org/testcontainers/dockerclient/DockerClientConfigUtils.java#L27
 	cmd := exec.Command("sh", "-c", "ip route|awk '/default/ { print $3 }'")
 	stdout, err := cmd.Output()
+	log.Infof("[test-log] query ip router result: %s", stdout)
 	if err != nil {
 		return "", errors.New("Failed to detect docker host")
 	}
